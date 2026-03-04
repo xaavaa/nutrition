@@ -14,7 +14,7 @@ form.addEventListener("submit", async (e) => {
   const data = formToPayload(new FormData(form));
 
   try {
-    const r = await fetch("http://localhost:8787/api/nutricio", {
+    const r = await fetch("/api/nutricio", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)

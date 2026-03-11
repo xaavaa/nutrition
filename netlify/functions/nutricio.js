@@ -31,7 +31,7 @@ const handler = async (event) => {
       body: JSON.stringify({
         model: "gpt-5",
         input: prompt,
-        max_output_tokens: 500
+        max_output_tokens: 900
       }),
       signal: ctrl.signal
     });
@@ -85,57 +85,31 @@ const handler = async (event) => {
 };
 
 function extractText(data) {
-  if (typeof data?.output_text === "string" && data.output_text.trim()) return data.output_text.trim();
+  if (typeof data?.output_text === "string" && data.output_text.trim()) {
+    return data.output_text.trim();
+  }
 
   const parts = [];
 
   const out = Array.isArray(data?.output) ? data.output : [];
   for (const item of out) {
+    if (item?.type === "message" && item?.role && item.role !== "assistant") continue;
+
+    if (item?.type === "output_text" && typeof item?.text === "string") {
+      parts.push(item.text);
+      continue;
+    }
+
     const content = Array.isArray(item?.content) ? item.content : [];
-
     for (const c of content) {
-      if (typeof c === "string") parts.push(c);
-
-      if (c && typeof c.text === "string") parts.push(c.text);
-
-      if (c && typeof c.text === "object" && typeof c.text.value === "string") parts.push(c.text.value);
-
       if (c?.type === "output_text" && typeof c?.text === "string") parts.push(c.text);
-      if (c?.type === "text" && typeof c?.text === "string") parts.push(c.text);
+      else if (c?.type === "text" && typeof c?.text === "string") parts.push(c.text);
+      else if (typeof c?.text === "object" && typeof c?.text?.value === "string") parts.push(c.text.value);
+      else if (typeof c === "string") parts.push(c);
     }
   }
 
-  if (parts.length) return parts.join("\n").trim();
-
-  return deepFindStrings(data).join("\n").trim();
-}
-
-function deepFindStrings(obj) {
-  const found = [];
-  const seen = new Set();
-
-  const walk = (x) => {
-    if (!x || typeof x !== "object") return;
-    if (seen.has(x)) return;
-    seen.add(x);
-
-    if (Array.isArray(x)) {
-      for (const v of x) {
-        if (typeof v === "string") found.push(v);
-        else walk(v);
-      }
-      return;
-    }
-
-    for (const k of Object.keys(x)) {
-      const v = x[k];
-      if (typeof v === "string") found.push(v);
-      else walk(v);
-    }
-  };
-
-  walk(obj);
-  return found;
+  return parts.join("\n").trim();
 }
 
 function buildPrompt(a) {
@@ -200,11 +174,11 @@ function buildPrompt(a) {
     "",
     "Regles:",
     "- Calories i macros aproximats (rang si falta info) i el perquè.",
-    "- 2 opcions (A/B).",
-    "- Entreno: Esmorzar, Pre, Post, Àpat principal + Per què (2-4 punts).",
+    "- 2 o 3 opcions (A/B/C).",
+    "- Entreno: Esmorzar, Pre-entrenament, Post-entrenament, Àpat principal + Per què (2-4 punts).",
     "- Descans: Esmorzar, Dinar, Sopar, Snack (si cal) + Per què (2-4 punts).",
     "- Entreno: més carbohidrats. Descans: menys carbohidrats, més verdures + greixos saludables.",
-    "- Adapta a preferències/al·lèrgies/intoleràncies i temps. No diagnostiquis.",
+    "- Adapta a preferències/al·lèrgies/intoleràncies i temps per cuinar. No diagnostiquis.",
     "",
     `Avui: ${trainingToday}`,
     weekTxt ? `Setmana: ${weekTxt}` : "",

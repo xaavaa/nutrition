@@ -1,3 +1,47 @@
+const handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return { statusCode: 500, body: "Missing OPENAI_API_KEY" };
+  }
+
+  let payload;
+  try {
+    payload = JSON.parse(event.body || "{}");
+  } catch {
+    return { statusCode: 400, body: "Invalid JSON" };
+  }
+
+  const prompt = buildPrompt(payload);
+
+  const r = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "gpt-5",
+      input: prompt
+    })
+  });
+
+  if (!r.ok) {
+    const text = await r.text();
+    return { statusCode: r.status, body: text };
+  }
+
+  const data = await r.json();
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: data?.output_text ?? "" })
+  };
+};
+
 function buildPrompt(a) {
   const safe = (v) => (v === null || v === undefined) ? "" : String(v).trim();
   const joinList = (arr) => Array.isArray(arr) ? arr.map(safe).filter(Boolean).join(", ") : safe(arr);
@@ -71,15 +115,12 @@ Dóna 2 o 3 PLANTILLES/OPCIONS completes (Opció A/B/C) i per a CADA opció incl
 En descans: menys carbohidrats i més sacietat (verdures + greixos saludables), sense extremismes.
 
 💡 El “per què” d’aquest pla (educació)
-Explica 1 concepte nutricional aplicat al seu cas (ex: dèficit calòric, proteïna suficient, fibra i sacietat, timing de carbohidrats per entrenar). 6-10 línies, clar.
+Explica 1 concepte nutricional aplicat al seu cas. 6-10 línies, clar.
 
 Regles:
 - Personalitza segons: al·lèrgies/intoleràncies, preferències (si és vegetarià/vegà adapta), temps per cuinar, i si menja fora.
 - No diagnostiquis. Si hi ha banderes vermelles, recomana consultar un professional.
-
-IMPORTANT:
-- Si avui és "Descans", prioritza la secció 🛌 com a principal (més detall i opcions molt aplicables).
-- Si avui NO és "Descans", prioritza 🏋️ com a principal.
+- Si avui és "Descans", prioritza 🛌. Si avui NO és "Descans", prioritza 🏋️.
 
 Context:
 - Avui (tipus): ${trainingToday}
@@ -116,3 +157,5 @@ Dades:
 - Notes: ${profile.notes}
 `.trim();
 }
+
+module.exports = { handler };

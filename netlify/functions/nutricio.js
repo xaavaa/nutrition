@@ -27,8 +27,7 @@ const handler = async (event) => {
       body: JSON.stringify({
         model: "gpt-5",
         input: prompt,
-        max_output_tokens: 700,
-        temperature: 0.6
+        max_output_tokens: 700
       }),
       signal: ctrl.signal
     });

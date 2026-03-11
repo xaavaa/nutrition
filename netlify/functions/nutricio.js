@@ -45,12 +45,38 @@ const handler = async (event) => {
   }
 
   const data = await r.json();
+  console.log(JSON.stringify(data).slice(0, 1500));
+  const text = extractText(data);
+
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: data?.output_text ?? "" })
+    body: JSON.stringify({ text })
   };
 };
+
+function extractText(data) {
+  if (data && typeof data.output_text === "string" && data.output_text.trim()) {
+    return data.output_text.trim();
+  }
+
+  const out = Array.isArray(data?.output) ? data.output : [];
+  const parts = [];
+
+  for (const item of out) {
+    const content = Array.isArray(item?.content) ? item.content : [];
+    for (const c of content) {
+      if (c?.type === "output_text" && typeof c?.text === "string") {
+        parts.push(c.text);
+      }
+      if (c?.type === "text" && typeof c?.text === "string") {
+        parts.push(c.text);
+      }
+    }
+  }
+
+  return parts.join("\n").trim();
+}
 
 function buildPrompt(a) {
   const safe = (v) => (v === null || v === undefined) ? "" : String(v).trim();

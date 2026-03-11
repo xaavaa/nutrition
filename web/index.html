@@ -21,196 +21,194 @@
       <div class="logo">N</div>
       <div>
         <div class="title">Rutina i Nutrició</div>
-        <div class="subtitle">Questionari ràpid → recomanacions personalitzades</div>
+        <div class="subtitle">Per passos → pla i opcions personalitzades</div>
       </div>
     </div>
     <div class="chips">
       <span class="chip">Català</span>
-      <span class="chip">Pla setmanal</span>
-      <span class="chip">Llista compra</span>
+      <span class="chip">Plantilles 2–3</span>
+      <span class="chip">Plan setmanal</span>
     </div>
   </header>
 
   <main class="container">
     <section class="card">
       <div class="cardHead">
-        <h1>Explica’m la teva rutina</h1>
-        <p>En 2–4 minuts. Com més concret, millor.</p>
+        <h1>Questionari</h1>
+        <p>Pas a pas per obtenir un pla clar i aplicable.</p>
+
+        <div class="progressWrap">
+          <div class="progressTop">
+            <span class="progressLabel" id="stepLabel">Pas 1/3</span>
+            <span class="progressHint" id="stepHint">Dades físiques</span>
+          </div>
+          <div class="progressBar">
+            <div class="progressFill" id="progressFill" style="width: 33.333%"></div>
+          </div>
+          <div class="progressDots">
+            <span class="dot active" data-dot="1"></span>
+            <span class="dot" data-dot="2"></span>
+            <span class="dot" data-dot="3"></span>
+          </div>
+        </div>
       </div>
 
       <form id="qForm" class="grid">
-        <div class="field">
-          <label>Nom (opcional)</label>
-          <input name="nom" placeholder="Ex: Marc" />
-        </div>
+        <div class="step active" data-step="1">
+          <div class="stepTitle">Pas 1: dades físiques</div>
 
-        <div class="row3">
           <div class="field">
-            <label>Edat</label>
-            <input name="edat" inputmode="numeric" placeholder="Ex: 29" />
+            <label>Nom (opcional)</label>
+            <input name="nom" placeholder="Ex: Marc" />
           </div>
-          <div class="field">
-            <label>Alçada (cm)</label>
-            <input name="alcada" inputmode="numeric" placeholder="Ex: 178" />
-          </div>
-          <div class="field">
-            <label>Pes (kg)</label>
-            <input name="pes" inputmode="numeric" placeholder="Ex: 78" />
-          </div>
-        </div>
 
-        <div class="field">
-          <label>Objectiu principal</label>
-          <select name="objectiu">
-            <option value="Millorar energia i hàbits">Millorar energia i hàbits</option>
-            <option value="Perdre greix">Perdre greix</option>
-            <option value="Guanyar massa muscular">Guanyar massa muscular</option>
-            <option value="Rendiment esportiu">Rendiment esportiu</option>
-            <option value="Millorar digestió">Millorar digestió</option>
-          </select>
-        </div>
-
-        <div class="row2">
-          <div class="field">
-            <label>Activitat física</label>
-            <select name="activitat">
-              <option value="Baixa (0-1 dies/setmana)">Baixa (0-1 dies/setmana)</option>
-              <option value="Moderada (2-3 dies/setmana)">Moderada (2-3 dies/setmana)</option>
-              <option value="Alta (4+ dies/setmana)">Alta (4+ dies/setmana)</option>
-            </select>
+          <div class="row3">
+            <div class="field">
+              <label>Edat</label>
+              <input name="edat" inputmode="numeric" placeholder="Ex: 29" />
+            </div>
+            <div class="field">
+              <label>Alçada (cm)</label>
+              <input name="alcada" inputmode="numeric" placeholder="Ex: 178" />
+            </div>
+            <div class="field">
+              <label>Pes (kg)</label>
+              <input name="pes" inputmode="numeric" placeholder="Ex: 78" />
+            </div>
           </div>
-          <div class="field">
-            <label>Passos/dia (aprox.)</label>
-            <select name="passos">
-              <option value="Menys de 5.000">Menys de 5.000</option>
-              <option value="5.000–9.000">5.000–9.000</option>
-              <option value="Més de 9.000">Més de 9.000</option>
-            </select>
+
+          <div class="row2">
+            <div class="field">
+              <label>Sexe (opcional)</label>
+              <select name="sexe">
+                <option value="">Prefereixo no dir-ho</option>
+                <option value="Dona">Dona</option>
+                <option value="Home">Home</option>
+                <option value="Altres">Altres</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Condició (opcional)</label>
+              <input name="condicio" placeholder="Ex: hipotiroïdisme, lesions, medicació..." />
+            </div>
           </div>
         </div>
 
-        <div class="row3">
-          <div class="field">
-            <label>Son (hores)</label>
-            <select name="sonHores">
-              <option value="Menys de 6">Menys de 6</option>
-              <option value="6–7">6–7</option>
-              <option value="7–8">7–8</option>
-              <option value="Més de 8">Més de 8</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Qualitat del son</label>
-            <select name="sonQualitat">
-              <option value="Dolenta">Dolenta</option>
-              <option value="Normal">Normal</option>
-              <option value="Bona">Bona</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Estrès</label>
-            <select name="estres">
-              <option value="Baix">Baix</option>
-              <option value="Mig">Mig</option>
-              <option value="Alt">Alt</option>
-            </select>
-          </div>
-        </div>
+        <div class="step" data-step="2">
+          <div class="stepTitle">Pas 2: hàbits</div>
 
-        <div class="row2">
-          <div class="field">
-            <label>Tipus de feina</label>
-            <select name="feina">
-              <option value="Sedentària (oficina/PC)">Sedentària (oficina/PC)</option>
-              <option value="Mixta">Mixta</option>
-              <option value="Física">Física</option>
-              <option value="Torns/horaris canviants">Torns/horaris canviants</option>
-            </select>
+          <div class="row2">
+            <div class="field">
+              <label>Activitat física (general)</label>
+              <select name="activitat">
+                <option value="Baixa (0-1 dies/setmana)">Baixa (0-1 dies/setmana)</option>
+                <option value="Moderada (2-3 dies/setmana)">Moderada (2-3 dies/setmana)</option>
+                <option value="Alta (4+ dies/setmana)">Alta (4+ dies/setmana)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Passos/dia (aprox.)</label>
+              <select name="passos">
+                <option value="Menys de 5.000">Menys de 5.000</option>
+                <option value="5.000–9.000">5.000–9.000</option>
+                <option value="Més de 9.000">Més de 9.000</option>
+              </select>
+            </div>
           </div>
-          <div class="field">
-            <label>Temps per cuinar (entre setmana)</label>
-            <select name="temps">
-              <option value="0–10 min">0–10 min</option>
-              <option value="10–25 min">10–25 min</option>
-              <option value="25–45 min">25–45 min</option>
-              <option value="Més de 45 min">Més de 45 min</option>
-            </select>
-          </div>
-        </div>
 
-        <div class="row3">
-          <div class="field">
-            <label>Aigua (L/dia)</label>
-            <select name="aigua">
-              <option value="Menys d'1L">Menys d'1L</option>
-              <option value="1–2L">1–2L</option>
-              <option value="2–3L">2–3L</option>
-              <option value="Més de 3L">Més de 3L</option>
-            </select>
+          <div class="row3">
+            <div class="field">
+              <label>Son (hores)</label>
+              <select name="sonHores">
+                <option value="Menys de 6">Menys de 6</option>
+                <option value="6–7">6–7</option>
+                <option value="7–8">7–8</option>
+                <option value="Més de 8">Més de 8</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Qualitat del son</label>
+              <select name="sonQualitat">
+                <option value="Dolenta">Dolenta</option>
+                <option value="Normal">Normal</option>
+                <option value="Bona">Bona</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Estrès</label>
+              <select name="estres">
+                <option value="Baix">Baix</option>
+                <option value="Mig">Mig</option>
+                <option value="Alt">Alt</option>
+              </select>
+            </div>
           </div>
-          <div class="field">
-            <label>Alcohol</label>
-            <select name="alcohol">
-              <option value="Mai o quasi mai">Mai o quasi mai</option>
-              <option value="1–2 cops/setmana">1–2 cops/setmana</option>
-              <option value="3+ cops/setmana">3+ cops/setmana</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Cafeïna</label>
-            <select name="cafeina">
-              <option value="0">0</option>
-              <option value="1 cafè/te al dia">1 cafè/te al dia</option>
-              <option value="2+ al dia">2+ al dia</option>
-            </select>
-          </div>
-        </div>
 
-        <div class="row2">
-          <div class="field">
-            <label>Pressupost</label>
-            <select name="pressupost">
-              <option value="Baix">Baix</option>
-              <option value="Mitjà">Mitjà</option>
-              <option value="Alt">Alt</option>
-            </select>
+          <div class="row3">
+            <div class="field">
+              <label>Aigua (L/dia)</label>
+              <select name="aigua">
+                <option value="Menys d'1L">Menys d'1L</option>
+                <option value="1–2L">1–2L</option>
+                <option value="2–3L">2–3L</option>
+                <option value="Més de 3L">Més de 3L</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Alcohol</label>
+              <select name="alcohol">
+                <option value="Mai o quasi mai">Mai o quasi mai</option>
+                <option value="1–2 cops/setmana">1–2 cops/setmana</option>
+                <option value="3+ cops/setmana">3+ cops/setmana</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Cafeïna</label>
+              <select name="cafeina">
+                <option value="0">0</option>
+                <option value="1 cafè/te al dia">1 cafè/te al dia</option>
+                <option value="2+ al dia">2+ al dia</option>
+              </select>
+            </div>
           </div>
-          <div class="field">
-            <label>Menjars al dia</label>
-            <select name="menjarsDia">
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-              <option value="5+">5+</option>
-            </select>
-          </div>
-        </div>
 
-        <div class="field">
-          <label>Preferències (separa per comes)</label>
-          <input name="preferencies" placeholder="Ex: mediterrània, vegetarià, alta proteïna..." />
-        </div>
+          <div class="row2">
+            <div class="field">
+              <label>Tipus de feina</label>
+              <select name="feina">
+                <option value="Sedentària (oficina/PC)">Sedentària (oficina/PC)</option>
+                <option value="Mixta">Mixta</option>
+                <option value="Física">Física</option>
+                <option value="Torns/horaris canviants">Torns/horaris canviants</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Temps per cuinar (entre setmana)</label>
+              <select name="temps">
+                <option value="0–10 min">0–10 min</option>
+                <option value="10–25 min">10–25 min</option>
+                <option value="25–45 min">25–45 min</option>
+                <option value="Més de 45 min">Més de 45 min</option>
+              </select>
+            </div>
+          </div>
 
-        <div class="row2">
           <div class="field">
-            <label>Al·lèrgies (separa per comes)</label>
-            <input name="alergies" placeholder="Ex: fruits secs, marisc..." />
+            <label>Preferències (separa per comes)</label>
+            <input name="preferencies" placeholder="Ex: mediterrània, vegetarià, alta proteïna..." />
           </div>
-          <div class="field">
-            <label>Intoleràncies (separa per comes)</label>
-            <input name="intolerancies" placeholder="Ex: lactosa, gluten..." />
-          </div>
-        </div>
 
-        <div class="row2">
-          <div class="field">
-            <label>Habilitat cuinant</label>
-            <select name="cuina">
-              <option value="Bàsica">Bàsica</option>
-              <option value="Normal">Normal</option>
-              <option value="M'agrada cuinar">M'agrada cuinar</option>
-            </select>
+          <div class="row2">
+            <div class="field">
+              <label>Al·lèrgies (separa per comes)</label>
+              <input name="alergies" placeholder="Ex: fruits secs, marisc..." />
+            </div>
+            <div class="field">
+              <label>Intoleràncies (separa per comes)</label>
+              <input name="intolerancies" placeholder="Ex: lactosa, gluten..." />
+            </div>
           </div>
+
           <div class="field">
             <label>Menja fora (freq.)</label>
             <select name="menjadorFora">
@@ -219,47 +217,188 @@
               <option value="3+ cops/setmana">3+ cops/setmana</option>
             </select>
           </div>
+
+          <div class="field">
+            <label>Esmorzar habitual</label>
+            <textarea name="esmorzar" rows="2" placeholder="Ex: cafè amb llet i galetes..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Dinar habitual</label>
+            <textarea name="dinar" rows="2" placeholder="Ex: pasta + alguna proteïna..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Sopar habitual</label>
+            <textarea name="sopar" rows="2" placeholder="Ex: entrepà o amanida..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Snacks habituals</label>
+            <textarea name="snacks" rows="2" placeholder="Ex: xocolata, fruits secs, iogurt..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Problemes o limitacions (separa per comes)</label>
+            <input name="problemes" placeholder="Ex: gana a la nit, ansietat, reflux..." />
+          </div>
         </div>
 
-        <div class="field">
-          <label>Esmorzar habitual</label>
-          <textarea name="esmorzar" rows="2" placeholder="Ex: cafè amb llet i galetes..."></textarea>
+        <div class="step" data-step="3">
+          <div class="stepTitle">Pas 3: objectius i pla setmanal</div>
+
+          <div class="field">
+            <label>Objectiu principal</label>
+            <select name="objectiu">
+              <option value="Millorar energia i hàbits">Millorar energia i hàbits</option>
+              <option value="Perdre greix">Perdre greix</option>
+              <option value="Guanyar massa muscular">Guanyar massa muscular</option>
+              <option value="Rendiment esportiu">Rendiment esportiu</option>
+              <option value="Millorar digestió">Millorar digestió</option>
+            </select>
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <label>Pressupost</label>
+              <select name="pressupost">
+                <option value="Baix">Baix</option>
+                <option value="Mitjà">Mitjà</option>
+                <option value="Alt">Alt</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Menjars al dia</label>
+              <select name="menjarsDia">
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5+">5+</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Plan setmanal d’entrenament</label>
+            <div class="weekly">
+              <div class="dayRow">
+                <span class="dayName">Dilluns</span>
+                <select name="week_mon" class="daySelect">
+                  <option value="Força">Força</option>
+                  <option value="Córrer">Córrer</option>
+                  <option value="Cardio suau">Cardio suau</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Mobilitat">Mobilitat</option>
+                  <option value="Descans" selected>Descans</option>
+                </select>
+              </div>
+              <div class="dayRow">
+                <span class="dayName">Dimarts</span>
+                <select name="week_tue" class="daySelect">
+                  <option value="Força">Força</option>
+                  <option value="Córrer">Córrer</option>
+                  <option value="Cardio suau">Cardio suau</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Mobilitat">Mobilitat</option>
+                  <option value="Descans" selected>Descans</option>
+                </select>
+              </div>
+              <div class="dayRow">
+                <span class="dayName">Dimecres</span>
+                <select name="week_wed" class="daySelect">
+                  <option value="Força">Força</option>
+                  <option value="Córrer">Córrer</option>
+                  <option value="Cardio suau">Cardio suau</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Mobilitat">Mobilitat</option>
+                  <option value="Descans" selected>Descans</option>
+                </select>
+              </div>
+              <div class="dayRow">
+                <span class="dayName">Dijous</span>
+                <select name="week_thu" class="daySelect">
+                  <option value="Força">Força</option>
+                  <option value="Córrer">Córrer</option>
+                  <option value="Cardio suau">Cardio suau</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Mobilitat">Mobilitat</option>
+                  <option value="Descans" selected>Descans</option>
+                </select>
+              </div>
+              <div class="dayRow">
+                <span class="dayName">Divendres</span>
+                <select name="week_fri" class="daySelect">
+                  <option value="Força">Força</option>
+                  <option value="Córrer">Córrer</option>
+                  <option value="Cardio suau">Cardio suau</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Mobilitat">Mobilitat</option>
+                  <option value="Descans" selected>Descans</option>
+                </select>
+              </div>
+              <div class="dayRow">
+                <span class="dayName">Dissabte</span>
+                <select name="week_sat" class="daySelect">
+                  <option value="Força">Força</option>
+                  <option value="Córrer">Córrer</option>
+                  <option value="Cardio suau">Cardio suau</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Mobilitat">Mobilitat</option>
+                  <option value="Descans" selected>Descans</option>
+                </select>
+              </div>
+              <div class="dayRow">
+                <span class="dayName">Diumenge</span>
+                <select name="week_sun" class="daySelect">
+                  <option value="Força">Força</option>
+                  <option value="Córrer">Córrer</option>
+                  <option value="Cardio suau">Cardio suau</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Mobilitat">Mobilitat</option>
+                  <option value="Descans" selected>Descans</option>
+                </select>
+              </div>
+            </div>
+            <div class="tinyHint">Això serveix per adaptar carbohidrats i energia segons el dia.</div>
+          </div>
+
+          <div class="field">
+            <label>Ha canviat el teu pla avui?</label>
+            <div class="toggleRow">
+              <label class="toggle">
+                <input type="radio" name="changedToday" value="NO" checked>
+                <span>No</span>
+              </label>
+              <label class="toggle">
+                <input type="radio" name="changedToday" value="SI">
+                <span>Sí</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field" id="overrideWrap" style="display:none">
+            <label>Quin entrenament fas avui (nou)?</label>
+            <select name="overrideToday">
+              <option value="Força">Força</option>
+              <option value="Córrer">Córrer</option>
+              <option value="Cardio suau">Cardio suau</option>
+              <option value="HIIT">HIIT</option>
+              <option value="Mobilitat">Mobilitat</option>
+              <option value="Descans">Descans</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Notes extra</label>
+            <textarea name="notes" rows="2" placeholder="Qualsevol detall que ajudi..."></textarea>
+          </div>
         </div>
 
-        <div class="field">
-          <label>Dinar habitual</label>
-          <textarea name="dinar" rows="2" placeholder="Ex: pasta + alguna proteïna..."></textarea>
-        </div>
-
-        <div class="field">
-          <label>Sopar habitual</label>
-          <textarea name="sopar" rows="2" placeholder="Ex: entrepà o amanida..."></textarea>
-        </div>
-
-        <div class="field">
-          <label>Snacks habituals</label>
-          <textarea name="snacks" rows="2" placeholder="Ex: xocolata, fruits secs, iogurt..."></textarea>
-        </div>
-
-        <div class="field">
-          <label>Caps de setmana (canvis típics)</label>
-          <textarea name="capsSetmana" rows="2" placeholder="Ex: menjo més fora, més alcohol, horaris tard..."></textarea>
-        </div>
-
-        <div class="field">
-          <label>Problemes o limitacions (separa per comes)</label>
-          <input name="problemes" placeholder="Ex: gana a la nit, ansietat, reflux, restrenyiment..." />
-        </div>
-
-        <div class="field">
-          <label>Notes extra</label>
-          <textarea name="notes" rows="2" placeholder="Qualsevol detall que ajudi..."></textarea>
-        </div>
-
-        <div class="actions">
-          <button id="sendBtn" type="submit" class="primary">
-            Genera recomanacions
-            <span class="arrow">→</span>
+        <div class="wizardNav">
+          <button type="button" class="ghost" id="prevBtn" disabled>Enrere</button>
+          <button type="button" class="ghost" id="nextBtn">Següent</button>
+          <button id="sendBtn" type="submit" class="primary" style="display:none">
+            Genera recomanacions <span class="arrow">→</span>
           </button>
           <div class="status" id="status"></div>
         </div>
@@ -269,7 +408,7 @@
     <section class="card resultCard" id="resultCard" aria-live="polite">
       <div class="cardHead">
         <h2>Resultat</h2>
-        <p>Ho imprimim en blocs perquè sigui fàcil de seguir.</p>
+        <p>Renderitzat en targetes, respectant el markdown.</p>
       </div>
 
       <div class="resultTools">
@@ -291,7 +430,7 @@
   <footer class="footer">
     <span>Consell general, no substitueix assessorament mèdic.</span>
     <span class="sep">•</span>
-    <span>Fet per a un flux simple: formulari → API → resultat.</span>
+    <span>Flux: passos → enviament → pla del dia (entrenes/descanses) + per què.</span>
   </footer>
 
   <script src="./app.js"></script>

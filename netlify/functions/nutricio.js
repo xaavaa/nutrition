@@ -1,8 +1,12 @@
 const handler = async (event) => {
-  if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
 
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return { statusCode: 500, body: "Missing OPENAI_API_KEY" };
+  if (!apiKey) {
+    return { statusCode: 500, body: "Missing OPENAI_API_KEY" };
+  }
 
   let payload;
   try {
@@ -43,17 +47,35 @@ const handler = async (event) => {
     clearTimeout(timeoutId);
   }
 
+  const rawText = await r.text();
   if (!r.ok) {
-    const text = await r.text();
     return {
       statusCode: r.status,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: text })
+      body: JSON.stringify({ error: rawText })
     };
   }
 
-  const data = await r.json();
+  let data;
+  try {
+    data = JSON.parse(rawText);
+  } catch {
+    return {
+      statusCode: 502,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Invalid JSON from OpenAI", raw: rawText.slice(0, 2000) })
+    };
+  }
+
   const text = extractText(data);
+
+  if (!text) {
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: "", debug: data })
+    };
+  }
 
   return {
     statusCode: 200,
@@ -65,18 +87,55 @@ const handler = async (event) => {
 function extractText(data) {
   if (typeof data?.output_text === "string" && data.output_text.trim()) return data.output_text.trim();
 
-  const out = Array.isArray(data?.output) ? data.output : [];
   const parts = [];
 
+  const out = Array.isArray(data?.output) ? data.output : [];
   for (const item of out) {
     const content = Array.isArray(item?.content) ? item.content : [];
+
     for (const c of content) {
+      if (typeof c === "string") parts.push(c);
+
+      if (c && typeof c.text === "string") parts.push(c.text);
+
+      if (c && typeof c.text === "object" && typeof c.text.value === "string") parts.push(c.text.value);
+
       if (c?.type === "output_text" && typeof c?.text === "string") parts.push(c.text);
       if (c?.type === "text" && typeof c?.text === "string") parts.push(c.text);
     }
   }
 
-  return parts.join("\n").trim();
+  if (parts.length) return parts.join("\n").trim();
+
+  return deepFindStrings(data).join("\n").trim();
+}
+
+function deepFindStrings(obj) {
+  const found = [];
+  const seen = new Set();
+
+  const walk = (x) => {
+    if (!x || typeof x !== "object") return;
+    if (seen.has(x)) return;
+    seen.add(x);
+
+    if (Array.isArray(x)) {
+      for (const v of x) {
+        if (typeof v === "string") found.push(v);
+        else walk(v);
+      }
+      return;
+    }
+
+    for (const k of Object.keys(x)) {
+      const v = x[k];
+      if (typeof v === "string") found.push(v);
+      else walk(v);
+    }
+  };
+
+  walk(obj);
+  return found;
 }
 
 function buildPrompt(a) {

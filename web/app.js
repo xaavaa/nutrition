@@ -201,6 +201,7 @@ function resolveTodayTraining(data) {
 }
 
 function renderMarkdownCards(md) {
+  md = stripMarkdownFence(md);
   if (!md) {
     resultEl.innerHTML = `<div class="placeholder"><div class="phTitle"></div><div class="phLine"></div><div class="phLine"></div><div class="phLine short"></div></div>`;
     return;
@@ -213,6 +214,14 @@ function renderMarkdownCards(md) {
       <div class="content">${renderBasicMarkdown(sec.content)}</div>
     </div>
   `).join("");
+}
+
+function stripMarkdownFence(s) {
+  const t = String(s || "").trim();
+  if (t.startsWith("```")) {
+    return t.replace(/^```[a-zA-Z]*\n?/, "").replace(/\n?```$/, "").trim();
+  }
+  return t;
 }
 
 function splitByEmojiHeadings(md) {

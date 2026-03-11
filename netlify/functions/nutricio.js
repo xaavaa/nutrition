@@ -31,7 +31,7 @@ const handler = async (event) => {
       body: JSON.stringify({
       model: "gpt-4.1-mini",
       input: prompt,
-      max_output_tokens: 150
+      max_output_tokens: 350
     }),
       signal: ctrl.signal
     });
@@ -163,6 +163,7 @@ function buildPrompt(a) {
   return [
     "Ets un nutricionista pràctic. Escriu en català. To motivador, professional, clar i directe.",
     "IMPORTANT: NO MOSTRIS raonament. Dona NOMÉS la resposta final en Markdown.",
+    "No posis blocs de codi ni utilitzis ```; escriu el Markdown directament.",
     "",
     "Resposta en MARKDOWN amb EXACTAMENT aquests 4 títols (amb emojis):",
     "📊 La teva estratègia metabòlica",

@@ -27,25 +27,32 @@ const handler = async (event) => {
       body: JSON.stringify({
         model: "gpt-5",
         input: prompt,
-        max_output_tokens: 700
+        max_output_tokens: 500
       }),
       signal: ctrl.signal
     });
   } catch (e) {
     clearTimeout(timeoutId);
-    const msg = String(e && e.name === "AbortError" ? "Timeout" : (e?.message || e));
-    return { statusCode: 504, body: msg };
+    const msg = e?.name === "AbortError" ? "Timeout calling OpenAI" : String(e?.message || e);
+    return {
+      statusCode: 504,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: msg })
+    };
   } finally {
     clearTimeout(timeoutId);
   }
 
   if (!r.ok) {
     const text = await r.text();
-    return { statusCode: r.status, body: text };
+    return {
+      statusCode: r.status,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: text })
+    };
   }
 
   const data = await r.json();
-  console.log(JSON.stringify(data).slice(0, 1500));
   const text = extractText(data);
 
   return {
@@ -56,9 +63,7 @@ const handler = async (event) => {
 };
 
 function extractText(data) {
-  if (data && typeof data.output_text === "string" && data.output_text.trim()) {
-    return data.output_text.trim();
-  }
+  if (typeof data?.output_text === "string" && data.output_text.trim()) return data.output_text.trim();
 
   const out = Array.isArray(data?.output) ? data.output : [];
   const parts = [];
@@ -66,12 +71,8 @@ function extractText(data) {
   for (const item of out) {
     const content = Array.isArray(item?.content) ? item.content : [];
     for (const c of content) {
-      if (c?.type === "output_text" && typeof c?.text === "string") {
-        parts.push(c.text);
-      }
-      if (c?.type === "text" && typeof c?.text === "string") {
-        parts.push(c.text);
-      }
+      if (c?.type === "output_text" && typeof c?.text === "string") parts.push(c.text);
+      if (c?.type === "text" && typeof c?.text === "string") parts.push(c.text);
     }
   }
 
@@ -104,55 +105,54 @@ function buildPrompt(a) {
     `Dg ${safe(week.diumenge)}`
   ].filter(s => !s.endsWith(" ")).join(" | ");
 
-  const lines = [
+  const userData = [
+    pick("Nom", a.nom),
+    pick("Edat", a.edat),
+    pick("Alçada", a.alcada),
+    pick("Pes", a.pes),
+    pick("Objectiu", a.objectiu),
+    pick("Activitat", a.activitat),
+    pick("Passos/dia", a.passos),
+    pick("Son", a.sonHores ? `${a.sonHores} (qualitat: ${safe(a.sonQualitat)})` : ""),
+    pick("Estrès", a.estres),
+    pick("Aigua", a.aigua),
+    pick("Alcohol", a.alcohol),
+    pick("Cafeïna", a.cafeina),
+    pick("Temps per cuinar", a.temps),
+    pick("Menja fora", a.menjadorFora),
+    pick("Esmorzar habitual", a.esmorzar),
+    pick("Dinar habitual", a.dinar),
+    pick("Sopar habitual", a.sopar),
+    pick("Snacks habituals", a.snacks),
+    pickList("Preferències", a.preferencies),
+    pickList("Al·lèrgies", a.alergies),
+    pickList("Intoleràncies", a.intolerancies),
+    pickList("Problemes", a.problemes),
+    pick("Notes", a.notes)
+  ].filter(Boolean).join("\n");
+
+  return [
     "Ets un nutricionista pràctic. Escriu en català. To motivador, professional, clar i directe.",
-    "",
     "Resposta en MARKDOWN amb EXACTAMENT aquests 4 títols (amb emojis):",
     "📊 La teva estratègia metabòlica",
     "🏋️ AVUI ENTRENO (dia d’alta energia)",
     "🛌 AVUI DESCANSO (dia de recuperació)",
     "💡 El “per què” d’aquest pla (educació)",
     "",
-    "Regles curtes:",
-    "- Dona calories i macros aproximats i explica el perquè (rang si falta info).",
-    "- Dona 2–3 opcions (A/B/C). En entreno: Esmorzar, Pre, Post, Àpat principal + Per què (2–4 punts).",
-    "- En descans: Esmorzar, Dinar, Sopar, Snack (si cal) + Per què (2–4 punts).",
+    "Regles:",
+    "- Calories i macros aproximats (rang si falta info) i el perquè.",
+    "- 2 opcions (A/B).",
+    "- Entreno: Esmorzar, Pre, Post, Àpat principal + Per què (2-4 punts).",
+    "- Descans: Esmorzar, Dinar, Sopar, Snack (si cal) + Per què (2-4 punts).",
     "- Entreno: més carbohidrats. Descans: menys carbohidrats, més verdures + greixos saludables.",
-    "- Adapta a preferències/al·lèrgies/intoleràncies i temps per cuinar. No diagnostiquis.",
-    "- Prioritza la secció del tipus d’avui: si avui és Descans → 🛌; si no → 🏋️.",
+    "- Adapta a preferències/al·lèrgies/intoleràncies i temps. No diagnostiquis.",
     "",
     `Avui: ${trainingToday}`,
     weekTxt ? `Setmana: ${weekTxt}` : "",
     "",
-    "Dades (només les que hi són):",
-    [
-      pick("Nom", a.nom),
-      pick("Edat", a.edat),
-      pick("Alçada", a.alcada),
-      pick("Pes", a.pes),
-      pick("Objectiu", a.objectiu),
-      pick("Activitat", a.activitat),
-      pick("Passos/dia", a.passos),
-      pick("Son", a.sonHores ? `${a.sonHores} (qualitat: ${safe(a.sonQualitat)})` : ""),
-      pick("Estrès", a.estres),
-      pick("Aigua", a.aigua),
-      pick("Alcohol", a.alcohol),
-      pick("Cafeïna", a.cafeina),
-      pick("Temps per cuinar", a.temps),
-      pick("Menja fora", a.menjadorFora),
-      pick("Esmorzar habitual", a.esmorzar),
-      pick("Dinar habitual", a.dinar),
-      pick("Sopar habitual", a.sopar),
-      pick("Snacks habituals", a.snacks),
-      pickList("Preferències", a.preferencies),
-      pickList("Al·lèrgies", a.alergies),
-      pickList("Intoleràncies", a.intolerancies),
-      pickList("Problemes", a.problemes),
-      pick("Notes", a.notes)
-    ].filter(Boolean).join("\n")
-  ].filter(Boolean);
-
-  return lines.join("\n");
+    "Dades:",
+    userData
+  ].filter(Boolean).join("\n");
 }
 
 module.exports = { handler };

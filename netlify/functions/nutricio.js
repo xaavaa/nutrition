@@ -29,12 +29,10 @@ const handler = async (event) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-5-2025-08-07",
-        input: prompt,
-        max_output_tokens: 350,
-        reasoning: { effort: "low" },
-        text: { verbosity: "low" }
-      }),
+      model: "gpt-4.1-mini",
+      input: prompt,
+      max_output_tokens: 150
+    }),
       signal: ctrl.signal
     });
   } catch (e) {

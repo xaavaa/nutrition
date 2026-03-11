@@ -29,9 +29,11 @@ const handler = async (event) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-5-2025-08-07",
         input: prompt,
-        max_output_tokens: 900
+        max_output_tokens: 350,
+        reasoning: { effort: "low" },
+        text: { verbosity: "low" }
       }),
       signal: ctrl.signal
     });
@@ -48,6 +50,7 @@ const handler = async (event) => {
   }
 
   const rawText = await r.text();
+
   if (!r.ok) {
     return {
       statusCode: r.status,
@@ -90,11 +93,9 @@ function extractText(data) {
   }
 
   const parts = [];
-
   const out = Array.isArray(data?.output) ? data.output : [];
-  for (const item of out) {
-    if (item?.type === "message" && item?.role && item.role !== "assistant") continue;
 
+  for (const item of out) {
     if (item?.type === "output_text" && typeof item?.text === "string") {
       parts.push(item.text);
       continue;
@@ -139,7 +140,6 @@ function buildPrompt(a) {
   ].filter(s => !s.endsWith(" ")).join(" | ");
 
   const userData = [
-    pick("Nom", a.nom),
     pick("Edat", a.edat),
     pick("Alçada", a.alcada),
     pick("Pes", a.pes),
@@ -149,8 +149,6 @@ function buildPrompt(a) {
     pick("Son", a.sonHores ? `${a.sonHores} (qualitat: ${safe(a.sonQualitat)})` : ""),
     pick("Estrès", a.estres),
     pick("Aigua", a.aigua),
-    pick("Alcohol", a.alcohol),
-    pick("Cafeïna", a.cafeina),
     pick("Temps per cuinar", a.temps),
     pick("Menja fora", a.menjadorFora),
     pick("Esmorzar habitual", a.esmorzar),
@@ -166,6 +164,8 @@ function buildPrompt(a) {
 
   return [
     "Ets un nutricionista pràctic. Escriu en català. To motivador, professional, clar i directe.",
+    "IMPORTANT: NO MOSTRIS raonament. Dona NOMÉS la resposta final en Markdown.",
+    "",
     "Resposta en MARKDOWN amb EXACTAMENT aquests 4 títols (amb emojis):",
     "📊 La teva estratègia metabòlica",
     "🏋️ AVUI ENTRENO (dia d’alta energia)",
@@ -173,10 +173,10 @@ function buildPrompt(a) {
     "💡 El “per què” d’aquest pla (educació)",
     "",
     "Regles:",
-    "- Calories i macros aproximats (rang si falta info) i el perquè.",
-    "- 2 o 3 opcions (A/B/C).",
-    "- Entreno: Esmorzar, Pre-entrenament, Post-entrenament, Àpat principal + Per què (2-4 punts).",
-    "- Descans: Esmorzar, Dinar, Sopar, Snack (si cal) + Per què (2-4 punts).",
+    "- Calories i macros aproximats (rang si falta info) i el perquè (breu).",
+    "- 2 opcions (A/B).",
+    "- Entreno: Esmorzar, Pre-entrenament, Post-entrenament, Àpat principal + Per què (2-3 punts).",
+    "- Descans: Esmorzar, Dinar, Sopar, Snack (si cal) + Per què (2-3 punts).",
     "- Entreno: més carbohidrats. Descans: menys carbohidrats, més verdures + greixos saludables.",
     "- Adapta a preferències/al·lèrgies/intoleràncies i temps per cuinar. No diagnostiquis.",
     "",
